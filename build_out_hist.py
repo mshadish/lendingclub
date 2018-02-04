@@ -14,7 +14,7 @@ import time
 import sqlite3
 import pandas as pd
 
-SQLITE_PATH = '/users/mshadish/IdeaProjects/lendingclub/lendingclub.db'
+SQLITE_PATH = 'lendingclub.db'
 SECONDS_IN_YEAR = 31536000
 THREE_YRS_AGO_SQLITE = time.time() - (3 * SECONDS_IN_YEAR)
 THREE_YRS_AGO = datetime.datetime.fromtimestamp(THREE_YRS_AGO_SQLITE)
@@ -31,6 +31,9 @@ def convertDate(indate):
     return datetime.datetime.strptime(a_str, '%m/%d/%y')
 
 
+
+print 'First step: transform any data that has come in'
+print '    Read from SQLite database'
 df = pd.read_sql('select * from notes_hist where issue_date / 1000 > {0}'.format(THREE_YRS_AGO_SQLITE),
                  sqlite_con)
 
@@ -51,7 +54,7 @@ datediff = (today - mindate).days
 
 date_range = [today - datetime.timedelta(days=d) for d in range(datediff+1)]
 
-
+print '    Populate each day'
 outlist = []
 # for each date, get a subset and compute metrics
 for date in date_range:
@@ -110,7 +113,31 @@ cursor = sqlite_con.cursor()
 for elem in outdf.to_dict('split')['data']:
     cursor.execute('insert or ignore into notes_plots (day, defaultrate, default_late_rate, default_late_grace_rate, total_notes) VALUES (?,?,?,?,?)', tuple(elem))
 cursor.close()
-
-
+# commit changes
 sqlite_con.commit()
+
+
+
+
+# read the full dataset from the tables
+print 'Reading full dataset for plotting...'
+full_summary = pd.read_sql('''
+select
+    date(day / 1000, 'unixepoch') as date,
+    defaultrate,
+    default_late_rate - defaultrate as laterate,
+    default_late_grace_rate - default_late_rate as gracerate
+from
+    notes_plots
+order by day
+''', sqlite_con)
+# write out to csv
+print '...and dump to CSV'
+# rename the columns to easier-to-read representations
+full_summary = full_summary.rename(columns={'defaultrate': 'Default',
+                                            'laterate': 'Late',
+                                            'gracerate': 'In Grace Period'})
+full_summary.to_csv('data.csv', index=False)
+
+
 sqlite_con.close()

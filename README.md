@@ -16,8 +16,8 @@ Currently using Python to visualize note default rates as a stacked line chart. 
 
 ## Future Work
 
-### 1) Convert the stacked line chart to a stacked area chart, possibly using D3.js.  May require dumping data into a CSV
+##### 1) Clean-up code, commentary
 
-### 2) Clean-up code, commentary
+##### 2) Convert the bar chart of note grades to a stacked bar chart to show default rates broken down by grade
 
-### 3) Convert the bar chart of note grades to a stacked bar chart to show default rates broken down by grade
+##### 3) Clean up visualization
