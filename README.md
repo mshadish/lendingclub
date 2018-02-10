@@ -1,5 +1,7 @@
 # LendingClub Default Rate Visualization
 
+##### https://mshadish.github.io/lendingclub/
+
 Scala project + Python scripts to support visualization of default rates and other distressed loans over time
 
 ## Data Acquisition
@@ -16,8 +18,6 @@ Currently using Python to visualize note default rates as a stacked line chart. 
 
 ## Future Work
 
-##### 1) Clean-up code, commentary
+##### 1) Convert the bar chart of note grades to a stacked bar chart to show default rates broken down by grade
 
-##### 2) Convert the bar chart of note grades to a stacked bar chart to show default rates broken down by grade
-
-##### 3) Clean up visualization
+##### 2) Clean up visualization
