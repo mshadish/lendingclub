@@ -24,10 +24,11 @@ import datetime
 import time
 import sqlite3
 import pandas as pd
+import os
 
-
-# define the path to the local SQLite database as a constant
-SQLITE_PATH = 'lendingclub.db'
+# obtain the path to the local SQLite database
+# from a defined environment variable
+SQLITE_PATH = os.environ['LENDINGCLUB_PATH']
 
 # define a few other constants around date management in SQLite
 SECONDS_IN_YEAR = 31536000
@@ -245,11 +246,11 @@ if __name__ == '__main__':
     # currently driving visualization off of CSV
     # for simplicity of hosting off github.io
     # minor formatting
-    out_csv = daily_summary_pivot.rename(columns={'default': 'Default',
-                                                  'late': 'Late',
-                                                  'grace': 'In Grace Period'})
-    out_csv['date'] = out_csv.index
-    out_csv = out_csv[['date','Default','Late','In Grace Period']]
+    daily_summary_pivot['date'] = daily_summary_pivot.index
+    out_csv = daily_summary_pivot[['date','default','late','grace']]
+    out_csv = out_csv.rename(columns={'default': 'Default',
+                                      'late': 'Late',
+                                      'grace': 'In Grace Period'})
     # and write out
     out_csv.to_csv('data.csv', index=False)
     ###########################################################################
