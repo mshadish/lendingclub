@@ -70,7 +70,7 @@ d3.csv("data.csv", type, function(error, data) {
   // use this to read the 
   var keys = data.columns.slice(1);
 
-  x.domain(d3.extent(data, function(d) { return d.date; }));
+  x.domain(Array( parseDate("2016-10-01"), d3.extent(data, function(d) { return d.date; })[1] ));
   y.domain([0, d3.max(data, function(d) {
 	  	return keys.reduce( function(sum, key) {
 	  		return sum + d[key]; 
@@ -81,11 +81,13 @@ d3.csv("data.csv", type, function(error, data) {
   console.log(y.domain());
   z.domain(keys);
   stack.keys(keys);
+  
 
   var layer = g.selectAll(".layer")
-    .data(stack(data))
+    .data(stack(data
+		.filter(function(y) { return y.date > parseDate("2016-10-01") })))
     .enter().append("g")
-      .attr("class", "layer");
+    .attr("class", "layer");
 
   layer.append("path")
       .attr("class", "area")
